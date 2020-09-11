@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
   implementation 'ch.qos.logback:logback-classic:1.2.3'
+  testImplementation 'io.netty:netty-all:4.1.52.Final'
 }
 
 application {
