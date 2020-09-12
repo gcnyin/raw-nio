@@ -22,11 +22,11 @@ dependencies {
 }
 
 application {
-  mainClassName = 'com.github.gcnyin.rawnio.App'
+  mainClassName = 'com.github.gcnyin.rawnio.echodemo.EchoServerApp'
 }
 
 jar {
   manifest {
-    attributes("Main-Class": "com.github.gcnyin.rawnio.App")
+    attributes("Main-Class": "com.github.gcnyin.rawnio.echodemo.EchoServerApp")
   }
 }

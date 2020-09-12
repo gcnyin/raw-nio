@@ -21,8 +21,8 @@ public class SocketEventLoop {
   public synchronized void add(SocketChannel socketChannel, SocketHandlerProvider socketHandlerProvider) throws IOException {
     SelectionKey key = socketChannel
       .configureBlocking(false)
-      .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-    SocketHandler handler = socketHandlerProvider.provide(socketChannel, key);
+      .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT);
+    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread()));
     key.attach(handler);
     selector.wakeup();
   }
@@ -38,9 +38,9 @@ public class SocketEventLoop {
           SelectionKey key = iter.next();
           SocketHandler handler = (SocketHandler) key.attachment();
           if (key.isReadable()) {
-            handler.read();
+            handler.onRead();
           } else if (key.isWritable()) {
-            handler.write();
+            handler.onWrite();
           }
           iter.remove();
         }

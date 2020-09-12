@@ -4,5 +4,5 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 public interface SocketHandlerProvider {
-  SocketHandler provide(SocketChannel socketChannel, SelectionKey key);
+  SocketHandler provide(SocketContext socketContext);
 }
