@@ -9,17 +9,16 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 @Slf4j
-public class EchoHandler implements SocketHandler {
+public class EchoServerHandler implements SocketHandler {
   private final ByteBuffer buffer = ByteBuffer.allocate(512);
   private final SocketContext ctx;
 
-  public EchoHandler(SocketContext socketContext) {
+  public EchoServerHandler(SocketContext socketContext) {
     this.ctx = socketContext;
   }
 
   @Override
-  public SocketContext getContext() {
-    return null;
+  public void onRegistered() throws IOException {
   }
 
   @Override
@@ -27,10 +26,10 @@ public class EchoHandler implements SocketHandler {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
       ctx.getSocketChannel().close();
-      log.info("connection closed");
+      log.info("ID: {}, connection closed", ctx.getConnectionId());
       return;
     }
-    log.info("read");
+    log.info("ID: {}, read", ctx.getConnectionId());
     ctx.getSelectionKey().interestOps(SelectionKey.OP_WRITE);
   }
 
@@ -43,7 +42,7 @@ public class EchoHandler implements SocketHandler {
     } else {
       buffer.clear();
     }
-    log.info("write");
+    log.info("ID: {}, write", ctx.getConnectionId());
     ctx.getSelectionKey().interestOps(SelectionKey.OP_READ);
   }
 }

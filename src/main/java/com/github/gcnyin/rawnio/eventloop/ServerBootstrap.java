@@ -1,6 +1,5 @@
 package com.github.gcnyin.rawnio.eventloop;
 
-import com.github.gcnyin.rawnio.echodemo.EchoHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -13,25 +12,32 @@ import java.util.Iterator;
 import java.util.Set;
 
 @Slf4j
-public class Bootstrap {
-  private final int port;
-  private final Selector selector;
-  private final ServerSocketChannel server;
-  private final SocketEventLoopGroup eventLoopGroup;
+public class ServerBootstrap {
+  private int port;
+  private Selector selector;
+  private ServerSocketChannel server;
+  private SocketEventLoopGroup eventLoopGroup;
+  private SocketHandlerProvider socketHandlerProvider;
 
-  public Bootstrap(int port) throws IOException {
-    this.port = port;
+  public ServerBootstrap provider(SocketHandlerProvider socketHandlerProvider) {
+    this.socketHandlerProvider = socketHandlerProvider;
+    return this;
+  }
+
+  public void connect(int port) throws IOException {
+    if (socketHandlerProvider == null) {
+      throw new RuntimeException("socketHandlerProvider is null");
+    }
     selector = Selector.open();
     server = ServerSocketChannel.open();
     eventLoopGroup = new SocketEventLoopGroup(4);
-  }
+    this.port = port;
 
-  public void start() throws IOException {
     server
-      .bind(new InetSocketAddress(port))
+      .bind(new InetSocketAddress(this.port))
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_ACCEPT);
-    log.info("server started on {} port", port);
+    log.info("server started on {} port", this.port);
     while (!Thread.interrupted()) {
       selector.select();
       Set<SelectionKey> keys = selector.selectedKeys();
@@ -41,7 +47,7 @@ public class Bootstrap {
         if (key.isAcceptable()) {
           SocketChannel channel = server.accept();
           log.info("new connection");
-          eventLoopGroup.dispatch(channel, EchoHandler::new);
+          eventLoopGroup.dispatch(channel, socketHandlerProvider);
         }
         iter.remove();
       }

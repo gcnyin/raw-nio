@@ -1,5 +1,6 @@
 package com.github.gcnyin.rawnio.eventloop;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -8,26 +9,35 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class SocketEventLoop {
 
   private final Selector selector;
+  @Setter
+  private SocketHandlerProvider socketHandlerProvider;
 
   public SocketEventLoop() throws IOException {
     this.selector = Selector.open();
+  }
+
+  public synchronized void add(SocketChannel socketChannel) throws IOException {
+    this.add(socketChannel, this.socketHandlerProvider);
   }
 
   public synchronized void add(SocketChannel socketChannel, SocketHandlerProvider socketHandlerProvider) throws IOException {
     SelectionKey key = socketChannel
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT);
-    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread()));
+    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread(), UUID.randomUUID().toString()));
     key.attach(handler);
+    handler.onRegistered();
     selector.wakeup();
   }
 
-  public void loop() {
+  public CompletableFuture<String> loop() {
     log.info("started");
     while (!Thread.interrupted()) {
       try {
@@ -45,8 +55,14 @@ public class SocketEventLoop {
           iter.remove();
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        log.error("error", e);
+        return CompletableFuture.supplyAsync(() -> {
+          throw new RuntimeException(e);
+        });
       }
     }
+    CompletableFuture<String> future = new CompletableFuture<>();
+    future.complete("interrupted");
+    return future;
   }
 }

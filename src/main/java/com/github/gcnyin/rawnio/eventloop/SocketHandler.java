@@ -3,7 +3,7 @@ package com.github.gcnyin.rawnio.eventloop;
 import java.io.IOException;
 
 public interface SocketHandler {
-  SocketContext getContext();
+  void onRegistered() throws IOException;
 
   void onRead() throws IOException;
 
