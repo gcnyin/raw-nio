@@ -24,7 +24,7 @@ public class ServerBootstrap {
     return this;
   }
 
-  public void connect(int port) throws IOException {
+  public void connect(int port) throws IOException, InterruptedException {
     if (socketHandlerProvider == null) {
       throw new RuntimeException("socketHandlerProvider is null");
     }

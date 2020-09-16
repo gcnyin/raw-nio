@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 public class ClientBootstrap {
   private InetSocketAddress inetSocketAddress;
@@ -19,7 +20,7 @@ public class ClientBootstrap {
     }
     this.inetSocketAddress = inetSocketAddress;
     SocketChannel socketChannel = SocketChannel.open(inetSocketAddress);
-    this.socketEventLoop = new SocketEventLoop();
+    this.socketEventLoop = new SocketEventLoop(new CountDownLatch(0));
     this.socketEventLoop.setSocketHandlerProvider(socketHandlerProvider);
     this.socketEventLoop.add(socketChannel);
     return this.socketEventLoop.loop();

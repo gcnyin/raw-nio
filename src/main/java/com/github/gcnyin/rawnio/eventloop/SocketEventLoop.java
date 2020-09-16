@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 public class SocketEventLoop {
@@ -18,9 +19,11 @@ public class SocketEventLoop {
   private final Selector selector;
   @Setter
   private SocketHandlerProvider socketHandlerProvider;
+  private final CountDownLatch countDownLatch;
 
-  public SocketEventLoop() throws IOException {
+  public SocketEventLoop(CountDownLatch countDownLatch) throws IOException {
     this.selector = Selector.open();
+    this.countDownLatch = countDownLatch;
   }
 
   public synchronized void add(SocketChannel socketChannel) throws IOException {
@@ -39,6 +42,7 @@ public class SocketEventLoop {
 
   public CompletableFuture<String> loop() {
     log.info("started");
+    countDownLatch.countDown();
     while (!Thread.interrupted()) {
       try {
         selector.select();
