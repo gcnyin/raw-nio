@@ -12,7 +12,6 @@ java {
 
 repositories {
   mavenLocal()
-  maven { url 'https://repo.huaweicloud.com/repository/maven/' }
   mavenCentral()
 }
 
