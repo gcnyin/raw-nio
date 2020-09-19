@@ -13,7 +13,7 @@ Here is my implementation of the event loop. I have developed several applicatio
 - echo
 - load balancer
 
-## Load Balancer
+## TCP Load Balancer
 
 Example
 
