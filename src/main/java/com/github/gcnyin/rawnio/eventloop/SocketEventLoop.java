@@ -33,8 +33,8 @@ public class SocketEventLoop {
   public synchronized void add(SocketChannel socketChannel, SocketHandlerProvider socketHandlerProvider) throws IOException {
     SelectionKey key = socketChannel
       .configureBlocking(false)
-      .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT);
-    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread(), UUID.randomUUID().toString()));
+      .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread(), UUID.randomUUID().toString(), selector));
     key.attach(handler);
     handler.onRegistered();
     selector.wakeup();

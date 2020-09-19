@@ -1,20 +1,22 @@
-package com.github.gcnyin.rawnio.echodemo;
+package com.github.gcnyin.rawnio.loadbalancer;
 
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 
 @Slf4j
-public class EchoServerHandler implements SocketHandler {
+public class BackendHandler implements SocketHandler {
   private final ByteBuffer buffer = ByteBuffer.allocate(512);
   private final SocketContext ctx;
+  @Setter
+  private FrontendHandler frontendHandler;
 
-  public EchoServerHandler(SocketContext socketContext) {
-    this.ctx = socketContext;
+  public BackendHandler(SocketContext ctx) {
+    this.ctx = ctx;
   }
 
   @Override
@@ -25,20 +27,17 @@ public class EchoServerHandler implements SocketHandler {
       log.info("ID: {}, connection closed", ctx.getConnectionId());
       return;
     }
-    log.info("ID: {}, read", ctx.getConnectionId());
-    ctx.getSelectionKey().interestOps(SelectionKey.OP_WRITE);
+    buffer.flip();
+    frontendHandler.write(buffer);
   }
 
   @Override
-  public void onWrite() throws IOException {
-    buffer.flip();
+  public void write(ByteBuffer buffer) throws IOException {
     ctx.getSocketChannel().write(buffer);
     if (buffer.hasRemaining()) {
-      buffer.compact();
+      buffer.flip();
     } else {
       buffer.clear();
     }
-    log.info("ID: {}, write", ctx.getConnectionId());
-    ctx.getSelectionKey().interestOps(SelectionKey.OP_READ);
   }
 }
