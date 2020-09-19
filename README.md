@@ -18,7 +18,9 @@ Here is my implementation of the event loop. I have developed several applicatio
 Example
 
 ```
-java -cp build/libs/raw-nio-all.jar com.github.gcnyin.rawnio.loadbalancer.LoadBalancer 8080 localhost:8081,localhost:8082
+java -cp build/libs/raw-nio-all.jar \
+    com.github.gcnyin.rawnio.loadbalancer.LoadBalancer \
+    8080 localhost:8081,localhost:8082
 ```
 
 `8080` is load balancer port. `localhost:8081,localhost:8082` is backend server list.
