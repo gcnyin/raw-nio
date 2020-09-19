@@ -40,4 +40,10 @@ public class BackendHandler implements SocketHandler {
       buffer.clear();
     }
   }
+
+  @Override
+  public void onClose() throws IOException {
+    ctx.getSocketChannel().close();
+    log.info("ID: {}, connection closed", ctx.getConnectionId());
+  }
 }

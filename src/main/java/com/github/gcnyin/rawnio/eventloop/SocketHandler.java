@@ -13,6 +13,9 @@ public interface SocketHandler {
   default void onWrite() throws IOException {
   }
 
+  default void onClose() throws IOException {
+  }
+
   default void write(ByteBuffer buffer) throws IOException {
   }
 }

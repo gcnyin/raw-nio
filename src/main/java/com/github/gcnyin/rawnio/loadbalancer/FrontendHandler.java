@@ -42,8 +42,7 @@ public class FrontendHandler implements SocketHandler {
   public void onRead() throws IOException {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
-      ctx.getSocketChannel().close();
-      log.info("ID: {}, connection closed", ctx.getConnectionId());
+      this.onClose();
       return;
     }
     buffer.flip();
@@ -59,5 +58,12 @@ public class FrontendHandler implements SocketHandler {
     } else {
       buffer.clear();
     }
+  }
+
+  @Override
+  public void onClose() throws IOException {
+    ctx.getSocketChannel().close();
+    log.info("ID: {}, connection closed", ctx.getConnectionId());
+    backendHandler.onClose();
   }
 }
