@@ -27,6 +27,8 @@ public class FrontendHandler implements SocketHandler {
 
   @Override
   public void onRegistered() throws IOException {
+    ctx.getSelectionKey().interestOps(SelectionKey.OP_READ);
+
     SocketChannel backendSocket = SocketChannel.open(new InetSocketAddress(server.getHost(), server.getPort()));
     backendSocket.configureBlocking(false);
     SelectionKey key = backendSocket.register(ctx.getSelector(), SelectionKey.OP_READ);
@@ -63,6 +65,8 @@ public class FrontendHandler implements SocketHandler {
   @Override
   public void onClose() throws IOException {
     ctx.getSocketChannel().close();
+    server.release();
+    log.info("release server {}", server);
     log.info("ID: {}, connection closed", ctx.getConnectionId());
     backendHandler.onClose();
   }

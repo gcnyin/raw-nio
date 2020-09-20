@@ -1,4 +1,6 @@
-package com.github.gcnyin.rawnio.loadbalancer;
+package com.github.gcnyin.rawnio.loadbalancer.serverpool;
+
+import com.github.gcnyin.rawnio.loadbalancer.Server;
 
 import java.util.ArrayList;
 import java.util.Collection;

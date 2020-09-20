@@ -34,7 +34,9 @@ public class SocketEventLoop {
     SelectionKey key = socketChannel
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-    SocketHandler handler = socketHandlerProvider.provide(new SocketContext(socketChannel, key, Thread.currentThread(), UUID.randomUUID().toString(), selector));
+    String connectionId = UUID.randomUUID().toString();
+    SocketContext socketContext = new SocketContext(socketChannel, key, Thread.currentThread(), connectionId, selector);
+    SocketHandler handler = socketHandlerProvider.provide(socketContext);
     key.attach(handler);
     handler.onRegistered();
     selector.wakeup();
@@ -54,6 +56,7 @@ public class SocketEventLoop {
           if (key.isReadable()) {
             handler.onRead();
           } else if (key.isWritable()) {
+            log.info("{}", handler);
             handler.onWrite();
           }
           iter.remove();

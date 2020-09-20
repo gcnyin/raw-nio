@@ -1,6 +1,8 @@
 package com.github.gcnyin.rawnio.loadbalancer;
 
 import com.github.gcnyin.rawnio.eventloop.ServerBootstrap;
+import com.github.gcnyin.rawnio.loadbalancer.serverpool.ServerPool;
+import com.github.gcnyin.rawnio.loadbalancer.serverpool.ServerPools;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,11 +23,12 @@ public class LoadBalancer {
     String[] split = s.split(",");
     List<Server> servers = Arrays.stream(split)
       .map(LoadBalancer::parseServer).collect(Collectors.toList());
-    ServerPool serverPool = ServerPools.roundRobinPool(servers);
+    ServerPool serverPool = ServerPools.minConnectionCountPool(servers);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap
       .provider(socketContext -> {
         Server server = serverPool.getServer();
+        server.addReference();
         log.info("get server: {}", server);
         return new FrontendHandler(socketContext, server);
       })
