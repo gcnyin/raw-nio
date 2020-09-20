@@ -19,9 +19,9 @@ public class LoadBalancer {
     int lbPort = Integer.parseInt(args[0]);
     String s = args[1];
     String[] split = s.split(",");
-    List<Server> serverList = Arrays.stream(split)
+    List<Server> servers = Arrays.stream(split)
       .map(LoadBalancer::parseServer).collect(Collectors.toList());
-    ServerPool serverPool = new ServerPool().addAll(serverList);
+    ServerPool serverPool = ServerPools.roundRobinPool(servers);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap
       .provider(socketContext -> {
