@@ -12,6 +12,9 @@ Here is my implementation of the event loop. I have developed several applicatio
 
 - echo
 - load balancer
+    - random
+    - round robin
+    - min connection count
 
 ## TCP Load Balancer
 
