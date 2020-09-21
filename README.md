@@ -8,7 +8,7 @@ Raw Java NIO practice
 
 ## Event Loop
 
-Here is my implementation of the event loop. I have developed several applications with the implementation.
+Here is my implementation of the event loop and several applications build-on the eventloop.
 
 - echo
 - load balancer
@@ -26,4 +26,4 @@ java -cp build/libs/raw-nio-all.jar \
     8080 localhost:8081,localhost:8082
 ```
 
-`8080` is load balancer port. `localhost:8081,localhost:8082` is backend server list.
+`8080` is the load balancer port. `localhost:8081,localhost:8082` is the backend server list.
