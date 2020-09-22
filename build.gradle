@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'org.slf4j:slf4j-simple:1.7.30'
+  implementation 'ch.qos.logback:logback-classic:1.2.3'
   testImplementation 'io.netty:netty-all:4.1.52.Final'
 }
 
