@@ -5,20 +5,26 @@ import lombok.Getter;
 import java.util.Arrays;
 
 public class ByteArray {
-  private byte[] source = {};
+  private byte[] source = new byte[10];
   @Getter
-  private long size = 0;
+  private int size = 0;
+  private final double factor = 0.75;
+  private int capacity = 10;
 
-  public ByteArray add(byte... bytes) {
-    int sourceOriginLength = source.length;
-    int bytesLength = bytes.length;
-    source = Arrays.copyOf(source, sourceOriginLength + bytesLength);
-    System.arraycopy(bytes, 0, source, sourceOriginLength, bytesLength);
-    size += bytesLength;
+  public ByteArray add(byte[] bytes) {
+    int newBytesSize = bytes.length;
+    if (shouldGrow(newBytesSize)) {
+      grow(newBytesSize);
+    }
+    System.arraycopy(bytes, 0, source, size, newBytesSize);
+    size += newBytesSize;
     return this;
   }
 
   public int getInt(int index) {
+    if (index + 4 > size) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
     byte first = source[index];
     byte second = source[index + 1];
     byte third = source[index + 2];
@@ -27,12 +33,28 @@ public class ByteArray {
   }
 
   public byte[] getCopyArray() {
-    return source.clone();
+    byte[] clone = new byte[size];
+    System.arraycopy(source, 0, clone, 0, size);
+    return clone;
   }
 
   public ByteArray clear() {
-    source = new byte[]{};
+    source = new byte[10];
     size = 0;
     return this;
+  }
+
+  private boolean shouldGrow(long newBytesSize) {
+    return size >= capacity * factor || size + newBytesSize >= capacity * factor;
+  }
+
+  private void grow(int newBytesSize) {
+    int newTotalSize = size + newBytesSize;
+    if (newTotalSize >= capacity) {
+      capacity = (int) (newTotalSize * (1 + factor));
+    } else {
+      capacity *= (1 + factor);
+    }
+    source = Arrays.copyOf(source, capacity);
   }
 }
