@@ -8,13 +8,15 @@ Raw Java NIO practice
 
 ## Event Loop
 
-Here is my implementation of the event loop and several applications build-on the eventloop.
+Here is my implementation of the event loop and several applications build-on the event loop.
 
 - echo
 - load balancer
     - random
     - round robin
     - min connection count
+
+I also implemented an object pool `ByteBufferPool` to reuse `DirectByteBuffer`.
 
 ## TCP Load Balancer
 
