@@ -10,13 +10,14 @@ import java.nio.ByteBuffer;
 
 @Slf4j
 public class BackendHandler implements SocketHandler {
-  private final ByteBuffer buffer = ByteBuffer.allocate(512);
+  private final ByteBuffer buffer;
   private final SocketContext ctx;
   @Setter
   private FrontendHandler frontendHandler;
 
   public BackendHandler(SocketContext ctx) {
     this.ctx = ctx;
+    buffer = ctx.getByteBufferPool().borrowObject();
   }
 
   @Override
@@ -42,7 +43,8 @@ public class BackendHandler implements SocketHandler {
   }
 
   @Override
-  public void onClose() throws IOException {
+  public void close() throws IOException {
+    ctx.getByteBufferPool().returnObject(buffer);
     ctx.getSocketChannel().close();
     log.info("ID: {}, connection closed", ctx.getConnectionId());
   }

@@ -1,5 +1,6 @@
 package com.github.gcnyin.rawnio.eventloop;
 
+import com.github.gcnyin.rawnio.objectpool.ByteBufferPool;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,7 @@ public class SocketEventLoop {
   @Setter
   private SocketHandlerProvider socketHandlerProvider;
   private final CountDownLatch countDownLatch;
+  private final ByteBufferPool byteBufferPool = new ByteBufferPool();
 
   public SocketEventLoop(CountDownLatch countDownLatch) throws IOException {
     this.selector = Selector.open();
@@ -35,7 +37,7 @@ public class SocketEventLoop {
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     String connectionId = UUID.randomUUID().toString();
-    SocketContext socketContext = new SocketContext(socketChannel, key, Thread.currentThread(), connectionId, selector);
+    SocketContext socketContext = new SocketContext(socketChannel, key, Thread.currentThread(), connectionId, selector, byteBufferPool);
     SocketHandler handler = socketHandlerProvider.provide(socketContext);
     key.attach(handler);
     handler.onRegistered();

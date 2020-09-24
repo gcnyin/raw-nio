@@ -14,13 +14,14 @@ import java.util.UUID;
 
 @Slf4j
 public class FrontendHandler implements SocketHandler {
-  private final ByteBuffer buffer = ByteBuffer.allocate(512);
+  private final ByteBuffer buffer;
   private final SocketContext ctx;
   @Setter
   private BackendHandler backendHandler;
   private final Server server;
 
   public FrontendHandler(SocketContext socketContext, Server server) {
+    this.buffer = socketContext.getByteBufferPool().borrowObject();
     this.ctx = socketContext;
     this.server = server;
   }
@@ -32,7 +33,7 @@ public class FrontendHandler implements SocketHandler {
     SocketChannel backendSocket = SocketChannel.open(new InetSocketAddress(server.getHost(), server.getPort()));
     backendSocket.configureBlocking(false);
     SelectionKey key = backendSocket.register(ctx.getSelector(), SelectionKey.OP_READ);
-    BackendHandler backendHandler = new BackendHandler(new SocketContext(backendSocket, key, ctx.getThread(), UUID.randomUUID().toString(), ctx.getSelector()));
+    BackendHandler backendHandler = new BackendHandler(new SocketContext(backendSocket, key, ctx.getThread(), UUID.randomUUID().toString(), ctx.getSelector(), ctx.getByteBufferPool()));
     key.attach(backendHandler);
     backendHandler.onRegistered();
     backendHandler.setFrontendHandler(this);
@@ -44,7 +45,7 @@ public class FrontendHandler implements SocketHandler {
   public void onRead() throws IOException {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
-      this.onClose();
+      this.close();
       return;
     }
     buffer.flip();
@@ -63,11 +64,12 @@ public class FrontendHandler implements SocketHandler {
   }
 
   @Override
-  public void onClose() throws IOException {
+  public void close() throws IOException {
+    ctx.getByteBufferPool().returnObject(buffer);
     ctx.getSocketChannel().close();
     server.release();
     log.info("release server {}", server);
     log.info("ID: {}, connection closed", ctx.getConnectionId());
-    backendHandler.onClose();
+    backendHandler.close();
   }
 }

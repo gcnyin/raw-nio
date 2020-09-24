@@ -32,7 +32,7 @@ public class ByteArrayTest {
     int i1 = byteArray.add(new byte[]{1, 2, 3, 4}).getInt(0);
     assertEquals(16909060, i1);
     int i2 = byteArray.add(new byte[]{5}).getInt(1);
-    System.out.println(i2);
+    assertEquals(33752069, i2);
   }
 
   @Test

@@ -1,5 +1,6 @@
 package com.github.gcnyin.rawnio.eventloop;
 
+import com.github.gcnyin.rawnio.objectpool.ByteBufferPool;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public class SocketContext {
   private final Thread thread;
   private final String connectionId;
   private final Selector selector;
+  private final ByteBufferPool byteBufferPool;
 
   public void close() throws IOException {
     this.socketChannel.close();
