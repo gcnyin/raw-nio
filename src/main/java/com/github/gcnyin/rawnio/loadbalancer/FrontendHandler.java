@@ -14,14 +14,14 @@ import java.util.UUID;
 
 @Slf4j
 public class FrontendHandler implements SocketHandler {
-  private final ByteBuffer buffer;
+  private ByteBuffer buffer;
   private final SocketContext ctx;
   @Setter
   private BackendHandler backendHandler;
   private final Server server;
+  private boolean firstTime = true;
 
   public FrontendHandler(SocketContext socketContext, Server server) {
-    this.buffer = socketContext.getByteBufferPool().borrowObject();
     this.ctx = socketContext;
     this.server = server;
   }
@@ -43,6 +43,9 @@ public class FrontendHandler implements SocketHandler {
 
   @Override
   public void onRead() throws IOException {
+    if (firstTime) {
+      firstTime();
+    }
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
       this.close();
@@ -54,6 +57,9 @@ public class FrontendHandler implements SocketHandler {
 
   @Override
   public void write(ByteBuffer buffer) throws IOException {
+    if (firstTime) {
+      firstTime();
+    }
     int i = ctx.getSocketChannel().write(buffer);
     log.info("write {}", i);
     if (buffer.hasRemaining()) {
@@ -71,5 +77,10 @@ public class FrontendHandler implements SocketHandler {
     log.info("release server {}", server);
     log.info("ID: {}, connection closed", ctx.getConnectionId());
     backendHandler.close();
+  }
+
+  private void firstTime() {
+    this.buffer = ctx.getByteBufferPool().borrowObject();
+    firstTime = false;
   }
 }
