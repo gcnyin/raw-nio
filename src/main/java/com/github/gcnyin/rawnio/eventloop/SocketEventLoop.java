@@ -32,7 +32,7 @@ public class SocketEventLoop {
     this.add(socketChannel, this.socketHandlerProvider);
   }
 
-  public synchronized void add(SocketChannel socketChannel, SocketHandlerProvider socketHandlerProvider) throws IOException {
+  public void add(SocketChannel socketChannel, SocketHandlerProvider socketHandlerProvider) throws IOException {
     SelectionKey key = socketChannel
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
