@@ -21,6 +21,7 @@ public class ByteBufferPoolTest {
 
     assertEquals(b1, b2);
     assertEquals(1, pool.getSize());
+    assertEquals(1, pool.getUsedCount());
   }
 
   @Test
@@ -31,6 +32,21 @@ public class ByteBufferPoolTest {
     pool.borrowObject();
 
     assertEquals(3, pool.getSize());
+    assertEquals(3, pool.getUsedCount());
+  }
+
+  @Test
+  public void should_scale_down_when_borrow_3_buffer_and_reutrn_all_of_them_given_a_ByteBufferPool() {
+    ByteBufferPool pool = new ByteBufferPool();
+    ByteBuffer b1 = pool.borrowObject();
+    ByteBuffer b2 = pool.borrowObject();
+    ByteBuffer b3 = pool.borrowObject();
+    pool.returnObject(b1);
+    pool.returnObject(b2);
+    pool.returnObject(b3);
+
+    assertEquals(1, pool.getSize());
+    assertEquals(0, pool.getUsedCount());
   }
 
   @Test
@@ -44,7 +60,6 @@ public class ByteBufferPoolTest {
     StringBuffer s1 = pool.borrowObject();
     StringBuffer s2 = pool.borrowObject();
     assertNotEquals(s1, s2);
-
   }
 
   static class StringBufferFactory extends BasePooledObjectFactory<StringBuffer> {
