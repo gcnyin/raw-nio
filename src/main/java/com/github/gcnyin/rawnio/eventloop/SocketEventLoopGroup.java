@@ -35,4 +35,16 @@ public class SocketEventLoopGroup {
     socketEventLoop.add(socketChannel, socketHandlerProvider);
     position++;
   }
+
+  public void addEventLoop() throws IOException, InterruptedException {
+    CountDownLatch countDownLatch = new CountDownLatch(1);
+    SocketEventLoop loop = new SocketEventLoop(countDownLatch);
+    Thread thread = new Thread(loop::loop);
+    thread.setName("event-loop-" + loops.size());
+    thread.start();
+    boolean await = countDownLatch.await(10, TimeUnit.SECONDS);
+    if (!await) {
+      throw new RuntimeException("count down latch await timeout");
+    }
+  }
 }
