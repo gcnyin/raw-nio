@@ -25,7 +25,7 @@ Example
 ```
 java -cp build/libs/raw-nio-all.jar \
     com.github.gcnyin.rawnio.loadbalancer.LoadBalancer \
-    8080 localhost:8081,localhost:8082
+    8080 localhost:8081,localhost:8082 roundRobinPool
 ```
 
-`8080` is the load balancer port. `localhost:8081,localhost:8082` is the backend server list.
+`8080` is the load balancer port. `localhost:8081,localhost:8082` is the backend server list, `roundRobinPool` is the load balancer strategy, also can be `minConnectionCountPool` and `randomPool`.

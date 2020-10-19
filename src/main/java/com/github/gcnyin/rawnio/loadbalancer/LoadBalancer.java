@@ -21,9 +21,23 @@ public class LoadBalancer {
     int lbPort = Integer.parseInt(args[0]);
     String s = args[1];
     String[] split = s.split(",");
+    String lbStrategy = args[2];
     List<Server> servers = Arrays.stream(split)
       .map(LoadBalancer::parseServer).collect(Collectors.toList());
-    ServerPool serverPool = ServerPools.minConnectionCountPool(servers);
+    ServerPool serverPool;
+    switch (lbStrategy) {
+      case "minConnectionCountPool":
+        serverPool = ServerPools.minConnectionCountPool(servers);
+        break;
+      case "randomPool":
+        serverPool = ServerPools.randomPool(servers);
+        break;
+      case "roundRobinPool":
+        serverPool = ServerPools.roundRobinPool(servers);
+        break;
+      default:
+        throw new RuntimeException("lb strategy is wrong");
+    }
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap
       .provider(socketContext -> {
