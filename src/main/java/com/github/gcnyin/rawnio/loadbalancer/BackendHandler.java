@@ -40,12 +40,13 @@ public class BackendHandler implements SocketHandler {
     if (firstTime) {
       firstTime();
     }
-    ctx.getSocketChannel().write(buffer);
+    int i = ctx.getSocketChannel().write(buffer);
     if (buffer.hasRemaining()) {
       buffer.flip();
     } else {
       buffer.clear();
     }
+    log.info("ID: {}, read {} bytes", ctx.getConnectionId(), i);
   }
 
   @Override

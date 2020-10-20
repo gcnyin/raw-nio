@@ -28,7 +28,6 @@ public class ByteBufferPool {
   }
 
   public ByteBuffer borrowObject() {
-    log.info("pool size before borrow: {}", map.size());
     Optional<ByteBuffer> optional = map
       .entrySet()
       .stream()
@@ -52,7 +51,6 @@ public class ByteBufferPool {
    * @return true represents success, false represents not such byteBuffer in pool
    */
   public boolean returnObject(ByteBuffer byteBuffer) {
-    log.info("pool size before return: {}", map.size());
     boolean containsKey = map.containsKey(byteBuffer);
     if (!containsKey) {
       return false;

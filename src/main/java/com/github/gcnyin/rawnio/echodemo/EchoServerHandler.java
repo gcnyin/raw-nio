@@ -25,20 +25,20 @@ public class EchoServerHandler implements SocketHandler {
       log.info("ID: {}, connection closed", ctx.getConnectionId());
       return;
     }
-    log.info("ID: {}, read", ctx.getConnectionId());
+    log.info("ID: {}, read {} bytes", ctx.getConnectionId(), i);
     ctx.getSelectionKey().interestOps(SelectionKey.OP_WRITE);
   }
 
   @Override
   public void onWrite() throws IOException {
     buffer.flip();
-    ctx.getSocketChannel().write(buffer);
+    int i = ctx.getSocketChannel().write(buffer);
     if (buffer.hasRemaining()) {
       buffer.compact();
     } else {
       buffer.clear();
     }
-    log.info("ID: {}, write", ctx.getConnectionId());
+    log.info("ID: {}, write {} bytes", ctx.getConnectionId(), i);
     ctx.getSelectionKey().interestOps(SelectionKey.OP_READ);
   }
 }

@@ -61,7 +61,7 @@ public class FrontendHandler implements SocketHandler {
       firstTime();
     }
     int i = ctx.getSocketChannel().write(buffer);
-    log.info("write {}", i);
+    log.info("ID: {}, write {} bytes", ctx.getConnectionId(), i);
     if (buffer.hasRemaining()) {
       buffer.flip();
     } else {

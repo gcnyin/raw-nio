@@ -58,7 +58,6 @@ public class SocketEventLoop {
           if (key.isReadable()) {
             handler.onRead();
           } else if (key.isWritable()) {
-            log.info("{}", handler);
             handler.onWrite();
           }
           iter.remove();
