@@ -1,14 +1,11 @@
 package com.github.gcnyin.rawnio.objectpool;
 
-import org.apache.commons.pool2.BasePooledObjectFactory;
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ByteBufferPoolTest {
   @Test
@@ -47,35 +44,5 @@ public class ByteBufferPoolTest {
 
     assertEquals(1, pool.getSize());
     assertEquals(0, pool.getUsedCount());
-  }
-
-  @Test
-  public void test_apache_common_pool() throws Exception {
-    GenericObjectPool<StringBuffer> pool = new GenericObjectPool<>(new StringBufferFactory());
-    StringBuffer stringBuffer = pool.borrowObject();
-    pool.returnObject(stringBuffer);
-    StringBuffer stringBuffer1 = pool.borrowObject();
-    assertEquals(stringBuffer, stringBuffer1);
-
-    StringBuffer s1 = pool.borrowObject();
-    StringBuffer s2 = pool.borrowObject();
-    assertNotEquals(s1, s2);
-  }
-
-  static class StringBufferFactory extends BasePooledObjectFactory<StringBuffer> {
-    @Override
-    public StringBuffer create() {
-      return new StringBuffer();
-    }
-
-    @Override
-    public PooledObject<StringBuffer> wrap(StringBuffer buffer) {
-      return new DefaultPooledObject<>(buffer);
-    }
-
-    @Override
-    public void passivateObject(PooledObject<StringBuffer> pooledObject) {
-      pooledObject.getObject().setLength(0);
-    }
   }
 }
