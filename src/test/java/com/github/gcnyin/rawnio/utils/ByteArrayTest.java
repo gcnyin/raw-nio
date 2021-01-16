@@ -13,7 +13,7 @@ public class ByteArrayTest {
       .add(new byte[]{4, 5, 6});
     byte[] copy = byteArray.getCopyArray();
     assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6}, copy);
-    assertEquals(6, byteArray.getSize());
+    assertEquals(6, byteArray.size());
   }
 
   @Test
@@ -23,7 +23,7 @@ public class ByteArrayTest {
       .add(new byte[]{4, 5, 6});
     byte[] copy = byteArray.clear().getCopyArray();
     assertArrayEquals(new byte[]{}, copy);
-    assertEquals(0, byteArray.getSize());
+    assertEquals(0, byteArray.size());
   }
 
   @Test
@@ -41,5 +41,21 @@ public class ByteArrayTest {
     assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
       byteArray.add(new byte[]{1, 2, 3, 4}).getInt(1);
     });
+  }
+
+  @Test
+  public void should_remove_bytes() {
+    ByteArray byteArray = new ByteArray();
+    byteArray.add(new byte[]{1, 2, 3});
+    byteArray.removeFirst(2);
+    assertEquals(1, byteArray.size());
+  }
+
+  @Test
+  public void should_get_char() {
+    ByteArray byteArray = new ByteArray();
+    byteArray.add(new byte[]{97, 48});
+    assertEquals('a', byteArray.getChar(0));
+    assertEquals('0', byteArray.getChar(1));
   }
 }

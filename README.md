@@ -15,6 +15,7 @@ Here is my implementation of the event loop and several applications build-on th
     - random
     - round robin
     - min connection count
+- *HTTP/1.1 server (Doing)*
 
 I also implemented an object pool `ByteBufferPool` to reuse `DirectByteBuffer`.
 

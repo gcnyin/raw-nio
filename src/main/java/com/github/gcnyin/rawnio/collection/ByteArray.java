@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 public class ByteArray {
   private byte[] source = new byte[10];
-  @Getter
   private int size = 0;
   private final double factor = 0.75;
   private int capacity = 10;
@@ -30,6 +29,13 @@ public class ByteArray {
     byte third = source[index + 2];
     byte forth = source[index + 3];
     return first << 24 | (second & 0xFF) << 16 | (third & 0xFF) << 8 | (forth & 0xFF);
+  }
+
+  public char getChar(int index) {
+    if (index >= size) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+    return (char) source[index];
   }
 
   public byte[] getCopyArray() {
@@ -56,5 +62,16 @@ public class ByteArray {
       capacity *= (1 + factor);
     }
     source = Arrays.copyOf(source, capacity);
+  }
+
+  public int size() {
+    return size;
+  }
+
+  public void removeFirst(int count) {
+    byte[] newBytes = new byte[size - count];
+    System.arraycopy(source, count, newBytes, 0, size - count);
+    source = newBytes;
+    size -= count;
   }
 }
