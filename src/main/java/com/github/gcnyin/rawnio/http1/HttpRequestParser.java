@@ -125,7 +125,7 @@ public class HttpRequestParser {
   }
 
   public HttpRequest getHttpRequest() {
-    return null;
+    return new HttpRequest(httpMethod, uri, version, headers, body);
   }
 
   private void parseMethod() {
