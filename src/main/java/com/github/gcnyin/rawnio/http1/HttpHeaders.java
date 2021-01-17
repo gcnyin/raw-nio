@@ -6,17 +6,19 @@ import java.util.Map;
 public class HttpHeaders {
   private final Map<String, String> headers = new HashMap<>();
 
-  public HttpHeaders add(String key, String value) {
-    headers.put(key, value);
-    return this;
+  public void add(String key, String value) {
+    headers.put(key.toLowerCase(), value);
   }
 
-  public HttpHeaders remove(String key) {
-    headers.remove(key);
-    return this;
+  public void remove(String key) {
+    headers.remove(key.toLowerCase());
   }
 
-  public String getValue(String key) {
-    return headers.get(key);
+  public String get(String key) {
+    return headers.get(key.toLowerCase());
+  }
+
+  public boolean containsKey(String key) {
+    return headers.containsKey(key.toLowerCase());
   }
 }

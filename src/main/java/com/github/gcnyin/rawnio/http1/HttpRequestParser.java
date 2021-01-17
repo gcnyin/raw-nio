@@ -3,12 +3,15 @@ package com.github.gcnyin.rawnio.http1;
 import com.github.gcnyin.rawnio.collection.ByteArray;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class HttpRequestParser {
   private final ByteArray parseBytes = new ByteArray();
   private HttpMethod httpMethod;
   private String uri;
   private String version;
+  private HttpHeaders headers;
+  private byte[] body;
   private boolean ready = false;
 
   public void read(ByteBuffer buffer) {
@@ -22,7 +25,57 @@ public class HttpRequestParser {
       parseUri();
     } else if (version == null) {
       parseVersion();
+    } else if (headers == null) {
+      parseHeaders();
+    } else if (headers.containsKey("Content-Length") && body == null) {
+      parseBody();
+    } else if (!headers.containsKey("Content-Length")) {
+      ready = true;
     }
+  }
+
+  private void parseBody() {
+    int bodyLength = Integer.parseInt(headers.get("Content-Length"));
+    int size = parseBytes.size();
+    if (size < bodyLength) {
+      return;
+    }
+    byte[] copyArray = parseBytes.getCopyArray();
+    this.body = new byte[bodyLength];
+    System.arraycopy(copyArray, 0, this.body, 0, bodyLength);
+    parseBytes.removeFirst(bodyLength);
+    ready = true;
+  }
+
+  private void parseHeaders() {
+    int size = parseBytes.size();
+    StringBuilder sb = new StringBuilder();
+    boolean ready = false;
+    int i = 0;
+    for (; i < size; i++) {
+      if (i + 3 < size
+        && parseBytes.getChar(i) == '\r'
+        && parseBytes.getChar(i + 1) == '\n'
+        && parseBytes.getChar(i + 2) == '\r'
+        && parseBytes.getChar(i + 3) == '\n') {
+        ready = true;
+        break;
+      }
+      sb.append(parseBytes.getChar(i));
+    }
+    if (!ready) {
+      return;
+    }
+    String headersStr = sb.toString();
+    this.headers = new HttpHeaders();
+    Arrays.stream(headersStr.split("\r\n"))
+      .forEach(headerStr -> {
+        String[] split = headerStr.split(":");
+        String key = split[0];
+        String value = split[1].trim();
+        this.headers.add(key, value);
+      });
+    parseBytes.removeFirst(i + 4);
   }
 
   private void parseVersion() {
