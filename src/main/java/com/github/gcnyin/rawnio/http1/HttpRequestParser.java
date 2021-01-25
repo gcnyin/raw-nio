@@ -20,16 +20,20 @@ public class HttpRequestParser {
     parseBytes.add(remaining);
     if (httpMethod == null) {
       parseMethod();
-      parseBytes.removeFirst(httpMethod.name().length());
-    } else if (uri == null) {
+    }
+    if (httpMethod != null && uri == null) {
       parseUri();
-    } else if (version == null) {
+    }
+    if (httpMethod != null && uri != null && version == null) {
       parseVersion();
-    } else if (headers == null) {
+    }
+    if (httpMethod != null && uri != null && version != null && headers == null) {
       parseHeaders();
-    } else if (headers.containsKey("Content-Length") && body == null) {
+    }
+    if (httpMethod != null && uri != null && version != null && headers != null && headers.containsKey("Content-Length") && body == null) {
       parseBody();
-    } else if (!headers.containsKey("Content-Length")) {
+    }
+    if (httpMethod != null && uri != null && version != null && headers != null && !headers.containsKey("Content-Length")) {
       ready = true;
     }
   }
@@ -66,7 +70,7 @@ public class HttpRequestParser {
     if (!ready) {
       return;
     }
-    String headersStr = sb.toString();
+    String headersStr = sb.toString().trim();
     this.headers = new HttpHeaders();
     Arrays.stream(headersStr.split("\r\n"))
       .forEach(headerStr -> {
@@ -101,12 +105,6 @@ public class HttpRequestParser {
     boolean ready = false;
     for (int i = 0; i < size; i++) {
       char c = parseBytes.getChar(i);
-      if (i == 0) {
-        if (c != ' ') {
-          throw new RuntimeException("bad uri");
-        }
-        continue;
-      }
       if (c == ' ') {
         ready = true;
         break;
@@ -117,7 +115,7 @@ public class HttpRequestParser {
       return;
     }
     uri = sb.toString();
-    parseBytes.removeFirst(uri.length() + 2);
+    parseBytes.removeFirst(uri.length() + 1);
   }
 
   public boolean isReady() {
@@ -129,6 +127,18 @@ public class HttpRequestParser {
   }
 
   private void parseMethod() {
+    _parseMethod();
+    if (httpMethod != null) {
+      int l = httpMethod.name().length();
+      if (parseBytes.getChar(l) == ' ') {
+        parseBytes.removeFirst(l + 1);
+      } else {
+        httpMethod = null;
+      }
+    }
+  }
+
+  private void _parseMethod() {
     int size = parseBytes.size();
     if (size < 3) {
       return;
@@ -140,7 +150,6 @@ public class HttpRequestParser {
 
     if ((c0 == 'G') && (c1 == 'E') && (c2 == 'T')) {
       httpMethod = HttpMethod.GET;
-      parseBytes.removeFirst(3);
       return;
     }
 
@@ -151,7 +160,6 @@ public class HttpRequestParser {
     char c3 = parseBytes.getChar(3);
     if (c0 == 'P' && c1 == 'O' && c2 == 'S' && c3 == 'T') {
       httpMethod = HttpMethod.POST;
-      parseBytes.removeFirst(4);
       return;
     }
 
@@ -175,18 +183,15 @@ public class HttpRequestParser {
 
     if (c0 == 'H' && c1 == 'E' && c2 == 'A' && c3 == 'D') {
       httpMethod = HttpMethod.HEAD;
-      parseBytes.removeFirst(4);
       return;
     }
 
     if (c0 == 'P' && c1 == 'A' && c2 == 'T' && c3 == 'C' && c4 == 'H') {
       httpMethod = HttpMethod.PATCH;
-      parseBytes.removeFirst(5);
     }
 
     if (c0 == 'T' && c1 == 'R' && c2 == 'A' && c3 == 'C' && c4 == 'E') {
       httpMethod = HttpMethod.TRACE;
-      parseBytes.removeFirst(5);
     }
 
     if (size < 7) {
@@ -196,13 +201,11 @@ public class HttpRequestParser {
     char c6 = parseBytes.getChar(6);
     if (c0 == 'O' && c1 == 'P' && c2 == 'T' && c3 == 'I' && c4 == 'O' && c5 == 'N' && c6 == 'S') {
       httpMethod = HttpMethod.OPTIONS;
-      parseBytes.removeFirst(6);
       return;
     }
 
     if (c0 == 'C' && c1 == 'O' && c2 == 'N' && c3 == 'N' && c4 == 'E' && c5 == 'C' && c6 == 'T') {
       httpMethod = HttpMethod.CONNECT;
-      parseBytes.removeFirst(6);
     }
   }
 }
