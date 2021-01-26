@@ -1,5 +1,6 @@
 package com.github.gcnyin.rawnio.http1;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,14 @@ public class HttpHeaders {
     return headers.containsKey(key.toLowerCase());
   }
 
-  public List<HttpHeader> toList() {
-    return headers.entrySet().stream()
-      .map(it -> new HttpHeader(it.getKey(), it.getValue()))
-      .collect(Collectors.toList());
+  public int size() {
+    return headers.size();
   }
 
-  public Map<String, String> toMap() {
-    return new HashMap<>(headers);
+  public List<HttpHeader> toSortedList() {
+    return headers.entrySet().stream()
+      .map(it -> new HttpHeader(it.getKey(), it.getValue()))
+      .sorted(Comparator.comparing(HttpHeader::getKey))
+      .collect(Collectors.toList());
   }
 }
