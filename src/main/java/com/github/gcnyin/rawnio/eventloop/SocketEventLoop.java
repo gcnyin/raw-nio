@@ -1,8 +1,9 @@
 package com.github.gcnyin.rawnio.eventloop;
 
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 import com.github.gcnyin.rawnio.objectpool.ByteBufferPool;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -14,8 +15,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
-@Slf4j
 public class SocketEventLoop {
+  private static final Logger log = LoggerFactory.getLogger(SocketEventLoop.class);
 
   private final Selector selector;
   @Setter

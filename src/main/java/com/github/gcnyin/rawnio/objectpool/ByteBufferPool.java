@@ -1,9 +1,5 @@
 package com.github.gcnyin.rawnio.objectpool;
 
-import lombok.Getter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
 import java.nio.ByteBuffer;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -14,14 +10,14 @@ import java.util.stream.Collectors;
 /**
  * It's not thread-safe, do not use the same {@link ByteBuffer} instance in different {@link Thread}
  */
-@Slf4j
-@ToString
 public class ByteBufferPool {
-  @ToString.Exclude
   private final Map<ByteBuffer, Boolean> map = new IdentityHashMap<>();
   private int totalCount = 0;
-  @Getter
   private int usedCount = 0;
+
+  public int getUsedCount() {
+    return usedCount;
+  }
 
   public int getSize() {
     return map.size();
@@ -77,5 +73,13 @@ public class ByteBufferPool {
       .collect(Collectors.toList());
     List<ByteBuffer> subList = usedByteBuffers.subList(0, usedByteBuffers.size() / 2);
     subList.forEach(map::remove);
+  }
+
+  @Override
+  public String toString() {
+    return "ByteBufferPool{" +
+      "totalCount=" + totalCount +
+      ", usedCount=" + usedCount +
+      '}';
   }
 }

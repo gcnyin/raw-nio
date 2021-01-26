@@ -1,6 +1,7 @@
 package com.github.gcnyin.rawnio.eventloop;
 
-import lombok.extern.slf4j.Slf4j;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,8 +12,9 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-@Slf4j
 public class ServerBootstrap {
+  private static final Logger log = LoggerFactory.getLogger(ServerBootstrap.class);
+
   private int port;
   private Selector selector;
   private ServerSocketChannel server;
@@ -37,7 +39,7 @@ public class ServerBootstrap {
       .bind(new InetSocketAddress(this.port))
       .configureBlocking(false)
       .register(selector, SelectionKey.OP_ACCEPT);
-    log.info("server started on {} port", this.port);
+    log.info("server started on " + this.port + " port");
     while (!Thread.interrupted()) {
       selector.select();
       Set<SelectionKey> keys = selector.selectedKeys();

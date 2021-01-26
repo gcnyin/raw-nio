@@ -2,14 +2,16 @@ package com.github.gcnyin.rawnio.loadbalancer;
 
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-@Slf4j
 public class BackendHandler implements SocketHandler {
+  private static final Logger log = LoggerFactory.getLogger(BackendHandler.class);
+
   private ByteBuffer buffer;
   private final SocketContext ctx;
   @Setter
@@ -28,7 +30,7 @@ public class BackendHandler implements SocketHandler {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
       ctx.getSocketChannel().close();
-      log.info("ID: {}, connection closed", ctx.getConnectionId());
+      log.info("ID: " + ctx.getConnectionId() + ", connection closed");
       return;
     }
     buffer.flip();
@@ -46,14 +48,14 @@ public class BackendHandler implements SocketHandler {
     } else {
       buffer.clear();
     }
-    log.info("ID: {}, read {} bytes", ctx.getConnectionId(), i);
+    log.info("ID: " + ctx.getConnectionId() + ", read " + i + " bytes");
   }
 
   @Override
   public void close() throws IOException {
     ctx.getByteBufferPool().returnObject(buffer);
     ctx.getSocketChannel().close();
-    log.info("ID: {}, connection closed", ctx.getConnectionId());
+    log.info("ID: " + ctx.getConnectionId() + ", connection closed");
   }
 
   private void firstTime() {

@@ -2,8 +2,9 @@ package com.github.gcnyin.rawnio.loadbalancer;
 
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,8 +13,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.UUID;
 
-@Slf4j
 public class FrontendHandler implements SocketHandler {
+  private static final Logger log = LoggerFactory.getLogger(FrontendHandler.class);
+
   private ByteBuffer buffer;
   private final SocketContext ctx;
   @Setter
@@ -61,7 +63,7 @@ public class FrontendHandler implements SocketHandler {
       firstTime();
     }
     int i = ctx.getSocketChannel().write(buffer);
-    log.info("ID: {}, write {} bytes", ctx.getConnectionId(), i);
+    log.info("ID: " + ctx.getConnectionId() + ", write " + i + " bytes");
     if (buffer.hasRemaining()) {
       buffer.flip();
     } else {
@@ -74,8 +76,8 @@ public class FrontendHandler implements SocketHandler {
     ctx.getByteBufferPool().returnObject(buffer);
     ctx.getSocketChannel().close();
     server.release();
-    log.info("release server {}", server);
-    log.info("ID: {}, connection closed", ctx.getConnectionId());
+    log.info("release server " + server);
+    log.info("ID: " + ctx.getConnectionId() + ", connection closed");
     backendHandler.close();
   }
 

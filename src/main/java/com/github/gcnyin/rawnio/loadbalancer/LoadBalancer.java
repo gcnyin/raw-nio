@@ -3,17 +3,19 @@ package com.github.gcnyin.rawnio.loadbalancer;
 import com.github.gcnyin.rawnio.eventloop.ServerBootstrap;
 import com.github.gcnyin.rawnio.loadbalancer.serverpool.ServerPool;
 import com.github.gcnyin.rawnio.loadbalancer.serverpool.ServerPools;
-import lombok.extern.slf4j.Slf4j;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 public class LoadBalancer {
+  private static final Logger log = LoggerFactory.getLogger(LoadBalancer.class);
+
   public static void main(String[] args) throws IOException, InterruptedException {
-    log.info("{}", Arrays.toString(args));
+    log.info(Arrays.toString(args));
     if (args.length < 2) {
       log.error("please input 2 args, such as `8080 localhost:8081,localhost:8082`");
       return;
@@ -43,7 +45,7 @@ public class LoadBalancer {
       .provider(socketContext -> {
         Server server = serverPool.getServer();
         server.addReference();
-        log.info("get server: {}", server);
+        log.info("get server: " + server);
         return new FrontendHandler(socketContext, server);
       })
       .connect(lbPort);

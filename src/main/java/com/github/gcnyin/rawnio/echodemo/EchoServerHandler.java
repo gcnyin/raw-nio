@@ -2,14 +2,16 @@ package com.github.gcnyin.rawnio.echodemo;
 
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
-import lombok.extern.slf4j.Slf4j;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
-@Slf4j
 public class EchoServerHandler implements SocketHandler {
+  private final static Logger log = LoggerFactory.getLogger(EchoServerHandler.class);
+
   private final ByteBuffer buffer = ByteBuffer.allocate(512);
   private final SocketContext ctx;
 
@@ -22,10 +24,10 @@ public class EchoServerHandler implements SocketHandler {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
       ctx.getSocketChannel().close();
-      log.info("ID: {}, connection closed", ctx.getConnectionId());
+      log.info("ID: " + ctx.getConnectionId() + ", connection closed");
       return;
     }
-    log.info("ID: {}, read {} bytes", ctx.getConnectionId(), i);
+    log.info("ID: " + ctx.getConnectionId() + ", read " + i + " bytes");
     ctx.getSelectionKey().interestOps(SelectionKey.OP_WRITE);
   }
 
@@ -38,7 +40,7 @@ public class EchoServerHandler implements SocketHandler {
     } else {
       buffer.clear();
     }
-    log.info("ID: {}, write {} bytes", ctx.getConnectionId(), i);
+    log.info("ID: " + ctx.getConnectionId() + ", write " + i + " bytes");
     ctx.getSelectionKey().interestOps(SelectionKey.OP_READ);
   }
 }

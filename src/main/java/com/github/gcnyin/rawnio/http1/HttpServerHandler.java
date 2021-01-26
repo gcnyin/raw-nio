@@ -2,13 +2,15 @@ package com.github.gcnyin.rawnio.http1;
 
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
-import lombok.extern.slf4j.Slf4j;
+import com.github.gcnyin.rawnio.logging.Logger;
+import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-@Slf4j
 public class HttpServerHandler implements SocketHandler {
+  private static final Logger log = LoggerFactory.getLogger(HttpServerHandler.class);
+
   private final ByteBuffer buffer = ByteBuffer.allocate(1024);
   private final HttpRequestParser httpRequestParser = new HttpRequestParser();
   private final SocketContext ctx;
@@ -22,7 +24,7 @@ public class HttpServerHandler implements SocketHandler {
     int i = ctx.getSocketChannel().read(buffer);
     if (i == -1) {
       ctx.getSocketChannel().close();
-      log.info("ID: {}, connection closed", ctx.getConnectionId());
+      log.info("ID: " + ctx.getConnectionId() + ", connection closed");
       return;
     }
     buffer.flip();
@@ -32,6 +34,6 @@ public class HttpServerHandler implements SocketHandler {
       return;
     }
     HttpRequest httpRequest = httpRequestParser.getHttpRequest();
-    log.info("{}", httpRequest);
+    log.info(httpRequest.toString());
   }
 }
