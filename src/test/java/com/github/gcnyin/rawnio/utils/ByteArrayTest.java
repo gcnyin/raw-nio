@@ -11,7 +11,7 @@ public class ByteArrayTest {
     ByteArray byteArray = new ByteArray();
     byteArray.add(new byte[]{1, 2, 3})
       .add(new byte[]{4, 5, 6});
-    byte[] copy = byteArray.getCopyArray();
+    byte[] copy = byteArray.getBytes();
     assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6}, copy);
     assertEquals(6, byteArray.size());
   }
@@ -21,7 +21,7 @@ public class ByteArrayTest {
     ByteArray byteArray = new ByteArray();
     byteArray.add(new byte[]{1, 2, 3})
       .add(new byte[]{4, 5, 6});
-    byte[] copy = byteArray.clear().getCopyArray();
+    byte[] copy = byteArray.clear().getBytes();
     assertArrayEquals(new byte[]{}, copy);
     assertEquals(0, byteArray.size());
   }

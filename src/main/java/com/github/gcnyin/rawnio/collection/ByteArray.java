@@ -1,10 +1,14 @@
 package com.github.gcnyin.rawnio.collection;
 
-import lombok.Getter;
-
 import java.util.Arrays;
 
 public class ByteArray {
+  public static ByteArray from(byte[] b) {
+    ByteArray byteArray = new ByteArray();
+    byteArray.add(b);
+    return byteArray;
+  }
+
   private byte[] source = new byte[10];
   private int size = 0;
   private final double factor = 0.75;
@@ -38,7 +42,7 @@ public class ByteArray {
     return (char) source[index];
   }
 
-  public byte[] getCopyArray() {
+  public byte[] getBytes() {
     byte[] clone = new byte[size];
     System.arraycopy(source, 0, clone, 0, size);
     return clone;

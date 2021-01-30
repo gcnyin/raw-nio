@@ -44,7 +44,7 @@ public class HttpRequestParser {
     if (size < bodyLength) {
       return;
     }
-    byte[] copyArray = parseBytes.getCopyArray();
+    byte[] copyArray = parseBytes.getBytes();
     this.body = new byte[bodyLength];
     System.arraycopy(copyArray, 0, this.body, 0, bodyLength);
     parseBytes.removeFirst(bodyLength);

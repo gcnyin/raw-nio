@@ -1,11 +1,14 @@
 package com.github.gcnyin.rawnio.http1;
 
+import lombok.ToString;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@ToString
 public class HttpHeaders {
   private final Map<String, String> headers = new HashMap<>();
 
