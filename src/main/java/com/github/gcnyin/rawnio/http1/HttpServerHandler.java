@@ -41,7 +41,6 @@ public class HttpServerHandler implements SocketHandler {
     log.info(response.toString());
     ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
     ctx.getSocketChannel().write(buffer);
-    ctx.getSelectionKey().interestOps(SelectionKey.OP_WRITE);
   }
 
   private HttpResponse handle(HttpRequest request) {

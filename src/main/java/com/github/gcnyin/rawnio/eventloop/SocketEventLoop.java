@@ -3,7 +3,6 @@ package com.github.gcnyin.rawnio.eventloop;
 import com.github.gcnyin.rawnio.logging.Logger;
 import com.github.gcnyin.rawnio.logging.LoggerFactory;
 import com.github.gcnyin.rawnio.objectpool.ByteBufferPool;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -19,7 +18,6 @@ public class SocketEventLoop {
   private static final Logger log = LoggerFactory.getLogger(SocketEventLoop.class);
 
   private final Selector selector;
-  @Setter
   private SocketHandlerProvider socketHandlerProvider;
   private final CountDownLatch countDownLatch;
   private final ByteBufferPool byteBufferPool = new ByteBufferPool();
@@ -78,5 +76,9 @@ public class SocketEventLoop {
     CompletableFuture<String> future = new CompletableFuture<>();
     future.complete("interrupted");
     return future;
+  }
+
+  public void setSocketHandlerProvider(SocketHandlerProvider socketHandlerProvider) {
+    this.socketHandlerProvider = socketHandlerProvider;
   }
 }
