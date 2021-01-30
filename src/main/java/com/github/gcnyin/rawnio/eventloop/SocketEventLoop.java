@@ -56,10 +56,15 @@ public class SocketEventLoop {
         while (iter.hasNext()) {
           SelectionKey key = iter.next();
           SocketHandler handler = (SocketHandler) key.attachment();
-          if (key.isReadable()) {
-            handler.onRead();
-          } else if (key.isWritable()) {
-            handler.onWrite();
+          try {
+            if (key.isReadable()) {
+              handler.onRead();
+            } else if (key.isWritable()) {
+              handler.onWrite();
+            }
+          } catch (IOException e) {
+            log.error("error", e);
+            key.channel().close();
           }
           iter.remove();
         }
