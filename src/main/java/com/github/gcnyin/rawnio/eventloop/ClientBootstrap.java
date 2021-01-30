@@ -1,7 +1,5 @@
 package com.github.gcnyin.rawnio.eventloop;
 
-import lombok.Setter;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -11,7 +9,6 @@ import java.util.concurrent.CountDownLatch;
 public class ClientBootstrap {
   private InetSocketAddress inetSocketAddress;
   private SocketEventLoop socketEventLoop;
-  @Setter
   private SocketHandlerProvider socketHandlerProvider;
 
   public CompletableFuture<String> connect(InetSocketAddress inetSocketAddress) throws IOException {
@@ -24,5 +21,9 @@ public class ClientBootstrap {
     this.socketEventLoop.setSocketHandlerProvider(socketHandlerProvider);
     this.socketEventLoop.add(socketChannel);
     return this.socketEventLoop.loop();
+  }
+
+  public void setSocketHandlerProvider(SocketHandlerProvider socketHandlerProvider) {
+    this.socketHandlerProvider = socketHandlerProvider;
   }
 }

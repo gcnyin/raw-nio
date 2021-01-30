@@ -32,8 +32,8 @@ public class HttpRequestParser {
     }
     if (httpMethod != null && uri != null && version != null && headers != null && headers.containsKey("Content-Length") && body == null) {
       parseBody();
-    }
-    if (httpMethod != null && uri != null && version != null && headers != null && !headers.containsKey("Content-Length")) {
+      ready = true;
+    } else if (httpMethod != null && uri != null && version != null && headers != null && !headers.containsKey("Content-Length")) {
       ready = true;
     }
   }
@@ -48,7 +48,6 @@ public class HttpRequestParser {
     this.body = new byte[bodyLength];
     System.arraycopy(copyArray, 0, this.body, 0, bodyLength);
     parseBytes.removeFirst(bodyLength);
-    ready = true;
   }
 
   private void parseHeaders() {

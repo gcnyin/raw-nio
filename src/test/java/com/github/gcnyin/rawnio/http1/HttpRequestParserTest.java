@@ -27,15 +27,15 @@ public class HttpRequestParserTest {
     assertEquals("HTTP/1.1", request.getVersion());
     HttpHeaders httpHeaders = request.getHttpHeaders();
     assertEquals(2, httpHeaders.size());
-    List<HttpHeader> headerList = httpHeaders.toSortedList();
+    List<HttpHeader> headerList = httpHeaders.getList();
 
-    HttpHeader h1 = headerList.get(0);
-    assertEquals("cache-control", h1.getKey());
-    assertEquals("max-age=0", h1.getValue());
-
-    HttpHeader h2 = headerList.get(1);
+    HttpHeader h2 = headerList.get(0);
     assertEquals("host", h2.getKey());
     assertEquals("www.example.com", h2.getValue());
+
+    HttpHeader h1 = headerList.get(1);
+    assertEquals("cache-control", h1.getKey());
+    assertEquals("max-age=0", h1.getValue());
   }
 
   @Test
@@ -59,19 +59,19 @@ public class HttpRequestParserTest {
 
     HttpHeaders httpHeaders = request.getHttpHeaders();
     assertEquals(3, httpHeaders.size());
-    List<HttpHeader> headerList = httpHeaders.toSortedList();
+    List<HttpHeader> headerList = httpHeaders.getList();
 
-    HttpHeader h1 = headerList.get(0);
-    assertEquals("content-length", h1.getKey());
-    assertEquals("16", h1.getValue());
+    HttpHeader h3 = headerList.get(0);
+    assertEquals("host", h3.getKey());
+    assertEquals("www.example.com", h3.getValue());
 
     HttpHeader h2 = headerList.get(1);
     assertEquals("content-type", h2.getKey());
     assertEquals("application/json", h2.getValue());
 
-    HttpHeader h3 = headerList.get(2);
-    assertEquals("host", h3.getKey());
-    assertEquals("www.example.com", h3.getValue());
+    HttpHeader h1 = headerList.get(2);
+    assertEquals("content-length", h1.getKey());
+    assertEquals("16", h1.getValue());
   }
 
   @Test
@@ -92,7 +92,7 @@ public class HttpRequestParserTest {
 
     HttpHeaders httpHeaders = request.getHttpHeaders();
     assertEquals(1, httpHeaders.size());
-    List<HttpHeader> headerList = httpHeaders.toSortedList();
+    List<HttpHeader> headerList = httpHeaders.getList();
 
     HttpHeader h3 = headerList.get(0);
     assertEquals("host", h3.getKey());

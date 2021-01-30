@@ -1,12 +1,10 @@
 package com.github.gcnyin.rawnio.http1;
 
 import com.github.gcnyin.rawnio.collection.ByteArray;
-import lombok.ToString;
 
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-@ToString
 public class HttpResponse {
   private final String version = "HTTP/1.1";
   private final String statusCode = "200";
@@ -23,7 +21,7 @@ public class HttpResponse {
     if (body != null) {
       headers.add("content-length", String.valueOf(body.size()));
     }
-    String h = headers.toSortedList().stream()
+    String h = headers.getList().stream()
       .map(it -> it.getKey() + ": " + it.getValue())
       .collect(Collectors.joining("\r\n")) + "\r\n\r\n";
     ByteArray byteArray = new ByteArray();
@@ -60,5 +58,16 @@ public class HttpResponse {
 
   public void setBody(ByteArray body) {
     this.body = body;
+  }
+
+  @Override
+  public String toString() {
+    return "HttpResponse{" +
+      "version='" + version + '\'' +
+      ", statusCode='" + statusCode + '\'' +
+      ", reasonPhrase='" + reasonPhrase + '\'' +
+      ", headers=" + headers +
+      ", body=" + body +
+      '}';
   }
 }

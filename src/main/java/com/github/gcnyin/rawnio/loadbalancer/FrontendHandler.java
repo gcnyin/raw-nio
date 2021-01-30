@@ -4,7 +4,6 @@ import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
 import com.github.gcnyin.rawnio.logging.Logger;
 import com.github.gcnyin.rawnio.logging.LoggerFactory;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,7 +17,6 @@ public class FrontendHandler implements SocketHandler {
 
   private ByteBuffer buffer;
   private final SocketContext ctx;
-  @Setter
   private BackendHandler backendHandler;
   private final Server server;
   private boolean firstTime = true;
