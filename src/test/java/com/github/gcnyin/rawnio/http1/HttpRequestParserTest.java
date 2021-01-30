@@ -73,4 +73,29 @@ public class HttpRequestParserTest {
     assertEquals("host", h3.getKey());
     assertEquals("www.example.com", h3.getValue());
   }
+
+  @Test
+  public void should_parse_delete_request_success() {
+    HttpRequestParser parser = new HttpRequestParser();
+    String r = "DELETE /user/1 HTTP/1.1\r\n"
+      + "host: www.example.com\r\n"
+      + "\r\n";
+    ByteBuffer byteBuffer = ByteBuffer.wrap(r.getBytes(StandardCharsets.UTF_8));
+
+    parser.read(byteBuffer);
+    assertTrue(parser.isReady());
+
+    HttpRequest request = parser.getHttpRequest();
+    assertEquals("/user/1", request.getUri());
+    assertNull(request.getBody());
+    assertEquals("HTTP/1.1", request.getVersion());
+
+    HttpHeaders httpHeaders = request.getHttpHeaders();
+    assertEquals(1, httpHeaders.size());
+    List<HttpHeader> headerList = httpHeaders.toSortedList();
+
+    HttpHeader h3 = headerList.get(0);
+    assertEquals("host", h3.getKey());
+    assertEquals("www.example.com", h3.getValue());
+  }
 }

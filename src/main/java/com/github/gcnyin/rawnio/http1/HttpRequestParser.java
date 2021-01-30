@@ -165,7 +165,6 @@ public class HttpRequestParser {
 
     if (c0 == 'P' && c1 == 'U' && c2 == 'T') {
       httpMethod = HttpMethod.PUT;
-      parseBytes.removeFirst(3);
       return;
     }
 
@@ -177,7 +176,6 @@ public class HttpRequestParser {
     char c5 = parseBytes.getChar(5);
     if (c0 == 'D' && c1 == 'E' && c2 == 'L' && c3 == 'E' && c4 == 'T' && c5 == 'E') {
       httpMethod = HttpMethod.DELETE;
-      parseBytes.removeFirst(4);
       return;
     }
 

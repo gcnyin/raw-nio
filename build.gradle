@@ -1,12 +1,12 @@
 plugins {
   id 'java'
   id 'application'
+  id 'jacoco'
   id 'io.franzbecker.gradle-lombok' version '4.0.0'
 }
 
 repositories {
   mavenLocal()
-  maven { url 'https://repo.huaweicloud.com/repository/maven/' }
   mavenCentral()
 }
 
@@ -26,4 +26,9 @@ jar {
 
 test {
   testLogging.showStandardStreams = true
+  finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+  dependsOn test // tests are required to run before generating the report
 }

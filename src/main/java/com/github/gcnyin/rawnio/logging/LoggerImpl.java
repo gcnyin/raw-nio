@@ -38,7 +38,7 @@ public class LoggerImpl implements Logger {
   private void print(String level, String msg) {
     String threadName = Thread.currentThread().getName();
     String time = Instant.now().toString();
-    String s = time + " " + level + " " + threadName + " " + name + " " + msg;
+    String s = time + " [" + level + "] [" + threadName + "] [" + name + "] " + msg;
     System.out.println(s);
   }
 }
