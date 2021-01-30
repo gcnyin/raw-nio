@@ -1,10 +1,6 @@
 # raw-nio
 
-Raw Java NIO practice
-
-## Requirements
-
-- Java 11
+Network applications based on Java raw nio.
 
 ## Event Loop
 
@@ -15,7 +11,8 @@ Here is my implementation of the event loop and several applications build-on th
     - random
     - round robin
     - min connection count
-- *HTTP/1.1 server (Doing)*
+- HTTP/1.1 server
+    - to-do: chunk and trailer
 
 I also implemented an object pool `ByteBufferPool` to reuse `DirectByteBuffer`.
 
@@ -30,3 +27,14 @@ java -cp build/libs/raw-nio-all.jar \
 ```
 
 `8080` is the load balancer port. `localhost:8081,localhost:8082` is the backend server list, `roundRobinPool` is the load balancer strategy, also can be `minConnectionCountPool` and `randomPool`.
+
+## HTTP/1.1 Server
+
+Example
+
+```
+java -cp build/libs/raw-nio-all.jar \
+    com.github.gcnyin.rawnio.http1.HttpServer 8080
+```
+
+`8080` is the HTTP/1.1 server port.
