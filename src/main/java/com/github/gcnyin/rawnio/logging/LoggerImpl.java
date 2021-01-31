@@ -1,8 +1,11 @@
 package com.github.gcnyin.rawnio.logging;
 
-import java.time.Instant;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LoggerImpl implements Logger {
+  private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
   private final String name;
 
   public LoggerImpl(String name) {
@@ -37,7 +40,7 @@ public class LoggerImpl implements Logger {
 
   private void print(String level, String msg) {
     String threadName = Thread.currentThread().getName();
-    String time = Instant.now().toString();
+    String time = format.format(new Date());
     String s = time + " [" + level + "] [" + threadName + "] [" + name + "] " + msg;
     System.out.println(s);
   }
