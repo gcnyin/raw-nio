@@ -38,3 +38,27 @@ java -cp build/libs/raw-nio-all.jar \
 ```
 
 `8080` is the HTTP/1.1 server port.
+
+## Build
+
+### Native image
+
+Install [Graalvm](https://www.graalvm.org).
+
+Install `native-image`
+
+```
+gu install native-image
+```
+
+Build jar
+
+```
+./gradlew jar
+```
+
+Build native image
+
+```
+native-image -jar ./build/libs/raw-nio.jar
+```
