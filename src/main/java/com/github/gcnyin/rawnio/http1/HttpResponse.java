@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 public class HttpResponse {
   private final String version = "HTTP/1.1";
-  private final String statusCode = "200";
-  private final String reasonPhrase = "OK";
+  private String statusCode = "200";
+  private String reasonPhrase = "OK";
   private final HttpHeaders headers = new HttpHeaders();
   private ByteArray body;
 
@@ -69,5 +69,13 @@ public class HttpResponse {
       ", headers=" + headers +
       ", body=" + body +
       '}';
+  }
+
+  public void setStatusCode(String statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public void setReasonPhrase(String reasonPhrase) {
+    this.reasonPhrase = reasonPhrase;
   }
 }

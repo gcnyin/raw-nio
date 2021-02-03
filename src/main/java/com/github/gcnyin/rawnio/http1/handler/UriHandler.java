@@ -1,17 +1,20 @@
 package com.github.gcnyin.rawnio.http1.handler;
 
-import com.github.gcnyin.rawnio.collection.ByteArray;
+import com.github.gcnyin.rawnio.http1.HttpContext;
 import com.github.gcnyin.rawnio.http1.HttpRequest;
-import com.github.gcnyin.rawnio.http1.HttpResponse;
+
+import java.io.IOException;
 
 public class UriHandler implements HttpRequestHandler {
   @Override
-  public HttpResponse handle(HttpRequest request) {
+  public void handle(HttpContext ctx) {
+    HttpRequest request = ctx.getRequest();
     String uri = request.getUri();
     String body = "{\"uri\":\"" + uri + "\"}";
-    HttpResponse response = new HttpResponse();
-    response.setBody(ByteArray.from(body.getBytes()));
-    response.addHeader("content-type", "application/json");
-    return response;
+    try {
+      ctx.status("200").json(body);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

@@ -38,9 +38,6 @@ public class HttpServerHandler implements SocketHandler {
     }
     HttpRequest request = httpRequestParser.getHttpRequest();
     log.info(request.toString());
-    HttpResponse response = handler.handle(request);
-    log.info(response.toString());
-    ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
-    ctx.getSocketChannel().write(buffer);
+    handler.handle(new HttpContext(request, new HttpResponse(), ctx));
   }
 }
