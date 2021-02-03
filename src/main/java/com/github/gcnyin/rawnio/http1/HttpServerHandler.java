@@ -1,14 +1,13 @@
 package com.github.gcnyin.rawnio.http1;
 
-import com.github.gcnyin.rawnio.collection.ByteArray;
 import com.github.gcnyin.rawnio.eventloop.SocketContext;
 import com.github.gcnyin.rawnio.eventloop.SocketHandler;
+import com.github.gcnyin.rawnio.http1.handler.HttpRequestHandler;
 import com.github.gcnyin.rawnio.logging.Logger;
 import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 
 public class HttpServerHandler implements SocketHandler {
   private static final Logger log = LoggerFactory.getLogger(HttpServerHandler.class);
@@ -16,9 +15,11 @@ public class HttpServerHandler implements SocketHandler {
   private final ByteBuffer buffer = ByteBuffer.allocate(1024);
   private final HttpRequestParser httpRequestParser = new HttpRequestParser();
   private final SocketContext ctx;
+  private final HttpRequestHandler handler;
 
-  public HttpServerHandler(SocketContext ctx) {
+  public HttpServerHandler(SocketContext ctx, HttpRequestHandler handler) {
     this.ctx = ctx;
+    this.handler = handler;
   }
 
   @Override
@@ -37,18 +38,9 @@ public class HttpServerHandler implements SocketHandler {
     }
     HttpRequest request = httpRequestParser.getHttpRequest();
     log.info(request.toString());
-    HttpResponse response = handle(request);
+    HttpResponse response = handler.handle(request);
     log.info(response.toString());
     ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
     ctx.getSocketChannel().write(buffer);
-  }
-
-  private HttpResponse handle(HttpRequest request) {
-    String uri = request.getUri();
-    String body = "{\"uri\":\"" + uri + "\"}";
-    HttpResponse httpResponse = new HttpResponse();
-    httpResponse.setBody(ByteArray.from(body.getBytes()));
-    httpResponse.addHeader("content-type", "application/json");
-    return httpResponse;
   }
 }

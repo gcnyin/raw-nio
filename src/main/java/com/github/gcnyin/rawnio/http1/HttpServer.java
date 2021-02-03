@@ -1,6 +1,7 @@
 package com.github.gcnyin.rawnio.http1;
 
 import com.github.gcnyin.rawnio.eventloop.ServerBootstrap;
+import com.github.gcnyin.rawnio.http1.handler.UriHandler;
 import com.github.gcnyin.rawnio.logging.Logger;
 import com.github.gcnyin.rawnio.logging.LoggerFactory;
 
@@ -17,7 +18,7 @@ public class HttpServer {
     int port = Integer.parseInt(args[0]);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap
-      .provider(HttpServerHandler::new)
+      .provider(ctx -> new HttpServerHandler(ctx, new UriHandler()))
       .connect(port);
   }
 }
