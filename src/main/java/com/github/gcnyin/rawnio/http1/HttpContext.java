@@ -47,4 +47,8 @@ public class HttpContext {
   public HttpRequest getRequest() {
     return request;
   }
+
+  public void close() throws IOException {
+    socketContext.close();
+  }
 }
