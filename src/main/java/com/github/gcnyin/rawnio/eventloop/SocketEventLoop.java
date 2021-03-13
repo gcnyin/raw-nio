@@ -46,7 +46,7 @@ public class SocketEventLoop {
   public CompletableFuture<String> loop() {
     log.info("started");
     countDownLatch.countDown();
-    while (!Thread.interrupted()) {
+    while (true) {
       try {
         selector.select();
         Set<SelectionKey> keys = selector.selectedKeys();
@@ -66,16 +66,13 @@ public class SocketEventLoop {
           }
           iter.remove();
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         log.error("error", e);
         return CompletableFuture.supplyAsync(() -> {
           throw new RuntimeException(e);
         });
       }
     }
-    CompletableFuture<String> future = new CompletableFuture<>();
-    future.complete("interrupted");
-    return future;
   }
 
   public void setSocketHandlerProvider(SocketHandlerProvider socketHandlerProvider) {
