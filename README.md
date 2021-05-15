@@ -2,9 +2,11 @@
 
 Network applications based on Java raw nio.
 
+- Java 8 & 11 & 16
+
 ## Event Loop
 
-Here is my implementation of the event loop and several applications build-on the event loop.
+This is my implementation of the event loop, and I built multiple applications on the event loop.
 
 - echo
 - load balancer
