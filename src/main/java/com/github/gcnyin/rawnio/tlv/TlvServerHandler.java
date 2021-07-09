@@ -3,9 +3,7 @@ package com.github.gcnyin.rawnio.tlv;
 import com.github.gcnyin.rawnio.objectpool.ByteBufferPool;
 
 import java.io.IOException;
-import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -36,11 +34,9 @@ public class TlvServerHandler {
   private byte[] data;
   private int dataPointer = 0;
   private int state = TYPE_STATE;
-  private final Selector selector;
 
-  public TlvServerHandler(SocketChannel channel, Selector selector, ByteBufferPool byteBufferPool) {
+  public TlvServerHandler(SocketChannel channel, ByteBufferPool byteBufferPool) {
     this.channel = channel;
-    this.selector = selector;
     this.byteBufferPool = byteBufferPool;
     this.buffer = byteBufferPool.borrowObject();
   }
@@ -62,7 +58,6 @@ public class TlvServerHandler {
 
   public void close() throws IOException {
     System.out.println("close");
-    channel.keyFor(selector).cancel();
     channel.close();
     byteBufferPool.returnObject(buffer);
   }

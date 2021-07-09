@@ -35,7 +35,7 @@ public class TlvServer {
             SocketChannel socketChannel = serverChannel.accept();
             socketChannel.configureBlocking(false);
             SelectionKey selectionKey = socketChannel.register(selector, SelectionKey.OP_READ);
-            selectionKey.attach(new TlvServerHandler(socketChannel, selector, byteBufferPool));
+            selectionKey.attach(new TlvServerHandler(socketChannel, byteBufferPool));
             selector.wakeup();
           } else if (key.isReadable()) {
             TlvServerHandler handler = (TlvServerHandler) key.attachment();
