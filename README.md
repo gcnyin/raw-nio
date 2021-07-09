@@ -9,6 +9,7 @@ Network applications based on Java raw nio.
 This is my implementation of the event loop, and I built multiple applications on the event loop.
 
 - echo
+- TLV protocol(type-lenght-value)
 - load balancer
     - random
     - round robin

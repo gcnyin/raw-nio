@@ -36,7 +36,7 @@ public class ByteBufferPool {
       map.put(byteBuffer, true);
       return byteBuffer;
     }
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(256);
+    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024);
     map.put(byteBuffer, true);
     totalCount++;
     return byteBuffer;
