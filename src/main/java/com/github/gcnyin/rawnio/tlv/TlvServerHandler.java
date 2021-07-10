@@ -44,9 +44,8 @@ public class TlvServerHandler {
   public void read() throws IOException {
     while (channel.read(buffer) > 0) {
       buffer.flip();
-      byte[] array = new byte[buffer.remaining()];
-      buffer.get(array);
-      for (byte b : array) {
+      while (buffer.hasRemaining()) {
+        byte b = buffer.get();
         int i = handlers[state].feed(b);
         if (i == -1) {
           return;
@@ -57,7 +56,6 @@ public class TlvServerHandler {
   }
 
   public void close() throws IOException {
-    System.out.println("close");
     channel.close();
     byteBufferPool.returnObject(buffer);
   }
