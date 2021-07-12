@@ -13,6 +13,8 @@ public class TlvServerHandler {
   public static final int LENGTH_STATE = 1;
   public static final int VALUE_STATE = 2;
 
+  private static final byte[] TYPE_BYTES = new byte[]{0x01, 0x23, 0x45, 0x67};
+
   private final SocketChannel channel;
   private final ByteBufferPool byteBufferPool;
   private final ByteBuffer buffer;
@@ -42,16 +44,26 @@ public class TlvServerHandler {
   }
 
   public void read() throws IOException {
-    while (channel.read(buffer) > 0) {
-      buffer.flip();
-      while (buffer.hasRemaining()) {
-        byte b = buffer.get();
-        int i = handlers[state].feed(b);
-        if (i == -1) {
-          return;
-        }
+    while (true) {
+      int i = channel.read(buffer);
+      if (i == -1) {
+        close();
+        return;
       }
-      buffer.clear();
+      if (i == 0) {
+        return;
+      }
+      if (i > 0) {
+        buffer.flip();
+        while (buffer.hasRemaining()) {
+          byte b = buffer.get();
+          int f = handlers[state].feed(b);
+          if (f == -1) {
+            return;
+          }
+        }
+        buffer.clear();
+      }
     }
   }
 
@@ -71,7 +83,7 @@ public class TlvServerHandler {
       return 0;
     }
     typePointer = 0;
-    if (!Arrays.equals(type, new byte[]{0x01, 0x23, 0x45, 0x67})) {
+    if (!Arrays.equals(type, TYPE_BYTES)) {
       close();
       return -1;
     }
