@@ -50,20 +50,18 @@ public class TlvServerHandler {
         close();
         return;
       }
-      if (i == 0) {
-        return;
-      }
-      if (i > 0) {
-        buffer.flip();
-        while (buffer.hasRemaining()) {
-          byte b = buffer.get();
-          int f = handlers[state].feed(b);
-          if (f == -1) {
-            return;
-          }
+      if (i == 0) return;
+
+      buffer.flip();
+      while (buffer.hasRemaining()) {
+        byte b = buffer.get();
+        int f = handlers[state].feed(b);
+        if (f == -1) {
+          close();
+          return;
         }
-        buffer.clear();
       }
+      buffer.clear();
     }
   }
 
@@ -73,10 +71,10 @@ public class TlvServerHandler {
   }
 
   interface Handler {
-    int feed(byte b) throws IOException;
+    int feed(byte b);
   }
 
-  private int readType(byte b) throws IOException {
+  private int readType(byte b) {
     type[typePointer] = b;
     if (typePointer != 3) {
       typePointer++;
@@ -84,14 +82,13 @@ public class TlvServerHandler {
     }
     typePointer = 0;
     if (!Arrays.equals(type, TYPE_BYTES)) {
-      close();
       return -1;
     }
     state = LENGTH_STATE;
     return 0;
   }
 
-  private int readLength(byte b) throws IOException {
+  private int readLength(byte b) {
     length[lengthPointer] = b;
     if (lengthPointer != 3) {
       lengthPointer++;
@@ -100,7 +97,6 @@ public class TlvServerHandler {
     lengthPointer = 0;
     dataLength = ByteBuffer.wrap(length).getInt();
     if (dataLength == 0) {
-      close();
       return -1;
     }
     data = new byte[dataLength];
