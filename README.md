@@ -44,6 +44,12 @@ java -cp build/libs/raw-nio-all.jar \
 
 ## Build
 
+### Jar
+
+```
+./gradlew clean build
+```
+
 ### Native image
 
 Install [Graalvm](https://www.graalvm.org).
@@ -57,7 +63,7 @@ gu install native-image
 Build jar
 
 ```
-./gradlew jar
+./gradlew clean build
 ```
 
 Build native image
@@ -66,8 +72,16 @@ Build native image
 native-image -jar ./build/libs/raw-nio.jar
 ```
 
-Build jpackage(JDK 17)
+### Jpackage
+
+Need JDK 17.
 
 ```
-jpackage --input . --name raw-nio --main-jar raw-nio.jar --main-class com.github.gcnyin.rawnio.http1.HttpServer --type dmg --java-options '--enable-preview'
+cd build/libs
+
+jpackage --input . --name raw-nio \
+  --main-jar raw-nio.jar \
+  --main-class com.github.gcnyin.rawnio.http1.HttpServer \
+  --type dmg \
+  --java-options '--enable-preview'
 ```
