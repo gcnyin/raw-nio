@@ -11,11 +11,10 @@ public class HttpServer {
   private static final Logger log = LoggerFactory.getLogger(HttpServer.class);
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    if (args.length < 1) {
-      log.error("please input 1 arg, which is the server port");
-      return;
+    int port = 8080;
+    if (args.length == 1) {
+      port = Integer.parseInt(args[0]);
     }
-    int port = Integer.parseInt(args[0]);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     serverBootstrap
       .provider(ctx -> new HttpServerHandler(ctx, new UriHandler()))

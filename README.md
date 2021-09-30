@@ -2,7 +2,7 @@
 
 Network applications based on Java raw nio.
 
-- Java 8 & 11 & 16
+- Java 8 11 17
 
 ## Event Loop
 
@@ -64,4 +64,10 @@ Build native image
 
 ```
 native-image -jar ./build/libs/raw-nio.jar
+```
+
+Build jpackage(JDK 17)
+
+```
+jpackage --input . --name raw-nio --main-jar raw-nio.jar --main-class com.github.gcnyin.rawnio.http1.HttpServer --type dmg --java-options '--enable-preview'
 ```
